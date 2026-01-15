@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Attendance</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1020;
+      color: white;
+    }
+
+    .container {
+      display: flex;
+      gap: 18px;
+      padding: 20px;
+      flex-wrap: wrap;
+    }
+
+    .left, .right {
+      flex: 1;
+      min-width: 320px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+      backdrop-filter: blur(12px);
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      font-size: 13px;
+      color: #d6e2ff;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .video-box {
+      border-radius: 16px;
+      overflow: hidden;
+      background: black;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .video-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .stats {
+      margin-top: 12px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: 160px;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .stat-card .label {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .stat-card .value {
+      margin-top: 6px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .controls {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-start {
+      background: rgba(76, 175, 80, 0.85);
+      color: white;
+      box-shadow: 0 8px 20px rgba(76, 175, 80, 0.22);
+    }
+
+    .btn-stop {
+      background: rgba(244, 67, 54, 0.85);
+      color: white;
+      box-shadow: 0 8px 20px rgba(244, 67, 54, 0.22);
+    }
+
+    .actions-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    /* ✅ BASE ACTION CARD */
+    .action-card {
+      padding: 18px;
+      border-radius: 16px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ✅ Glow strip on left */
+    .action-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 6px;
+      height: 100%;
+      opacity: 0.9;
+    }
+
+    .action-card:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.05);
+    }
+
+    .action-card h3 {
+      margin: 0;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-card p {
+      margin: 8px 0 0;
+      opacity: 0.85;
+      font-size: 14px;
+    }
+
+    /* ✅ COLOR THEMES */
+    .action-card.train {
+      background: linear-gradient(135deg, rgba(74, 144, 226, 0.25), rgba(29, 53, 87, 0.35));
+    }
+    .action-card.train::before {
+      background: #4a90e2;
+    }
+
+    .action-card.mark {
+      background: linear-gradient(135deg, rgba(46, 204, 113, 0.22), rgba(16, 73, 46, 0.35));
+    }
+    .action-card.mark::before {
+      background: #2ecc71;
+    }
+
+    .action-card.register {
+      background: linear-gradient(135deg, rgba(155, 89, 182, 0.22), rgba(60, 23, 77, 0.35));
+    }
+    .action-card.register::before {
+      background: #9b59b6;
+    }
+
+    .action-card.download {
+      background: linear-gradient(135deg, rgba(241, 196, 15, 0.18), rgba(92, 64, 10, 0.35));
+    }
+    .action-card.download::before {
+      background: #f1c40f;
+    }
+
+    .footer {
+      margin: 18px 20px;
+      opacity: 0.85;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    @media (max-width: 900px) {
+      .video-box {
+        height: 280px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- ✅ LEFT SIDE -->
+    <div class="left">
+      <div class="title">
+        <span>Live Camera</span>
+        <span class="pill" id="statusPill">No face detected</span>
+      </div>
+
+      <div class="video-box">
+        <img src="/video_feed" alt="Live Stream">
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <div class="label">Name</div>
+          <div class="value" id="nameBox">Unknown</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="label">Faces</div>
+          <div class="value" id="facesBox">0</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-start" onclick="startCamera()">▶ Start Camera</button>
+        <button class="btn btn-stop" onclick="stopCamera()">■ Stop</button>
+      </div>
+    </div>
+
+
+    <!-- ✅ RIGHT SIDE -->
+    <div class="right">
+      <div class="actions-title">Actions</div>
+
+      <!-- ✅ Train Model -->
+      <div class="action-card train" onclick="trainModel()">
+        <h3>🧠 Train Model</h3>
+        <p>Train after registering faces</p>
+      </div>
+
+      <!-- ✅ Mark Attendance -->
+      <div class="action-card mark" onclick="markAttendance()">
+        <h3>✅ Mark Attendance</h3>
+        <p>Marks only once per day</p>
+      </div>
+
+      <!-- ✅ Register Face -->
+      <div class="action-card register" onclick="window.location.href='/register'">
+        <h3>➕ Register New Face</h3>
+        <p>Add person to dataset</p>
+      </div>
+
+      <!-- ✅ Download PDF -->
+      <div class="action-card download" onclick="window.location.href='/download_today'">
+        <h3>⬇ Download Today's Attendance PDF</h3>
+        <p>Download attendance report (PDF)</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ✅ FOOTER UPDATED -->
+  <div class="footer">
+    ❤️ Made by Ayush, Aryan, Aditya & Rishab 
+  </div>
+
+
+  <script>
+    async function startCamera() {
+      await fetch("/start_camera", { method: "POST" });
+    }
+
+    async function stopCamera() {
+      await fetch("/stop_camera", { method: "POST" });
+    }
+
+    async function trainModel() {
+      const res = await fetch("/train", { method: "POST" });
+      const data = await res.json();
+      alert(data.message);
+    }
+
+    async function markAttendance() {
+      const res = await fetch("/mark_attendance", { method: "POST" });
+      const data = await res.json();
+      alert(data.message);
+    }
+
+    async function updateStatus() {
+      try {
+        const res = await fetch("/status");
+        const data = await res.json();
+
+        document.getElementById("nameBox").innerText = data.name;
+        document.getElementById("facesBox").innerText = data.faces;
+        document.getElementById("statusPill").innerText = data.status;
+      } catch (err) {
+        console.log("Status fetch error", err);
+      }
+    }
+
+    setInterval(updateStatus, 500);
+  </script>
+
+</body>
+</html>

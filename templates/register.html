@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Face</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <header class="nav">
+    <div class="nav-left">
+      <div class="logo">➕</div>
+      <div>
+        <h1>Register Face</h1>
+        <p>Capture dataset images using live camera</p>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a class="btn ghost" href="/">⬅ Back</a>
+    </div>
+  </header>
+
+  <main class="grid single">
+
+    <section class="card cam-card">
+      <div class="card-head">
+        <h2>Camera Preview</h2>
+        <span class="chip" id="chipStatus">Waiting...</span>
+      </div>
+
+      <div class="cam-wrap">
+        <img id="videoFeed" src="" alt="camera stream" />
+        <div class="cam-overlay">
+          <div class="overlay-item">
+            <span class="muted">Captured</span>
+            <span class="big" id="facesText">0</span>
+          </div>
+          <div class="overlay-item">
+            <span class="muted">Status</span>
+            <span class="big" id="nameText">Ready</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn primary" onclick="startCamera()">▶ Start Camera</button>
+        <button class="btn danger" onclick="stopCamera()">■ Stop</button>
+      </div>
+    </section>
+
+    <section class="card action-card">
+      <div class="card-head">
+        <h2>Register New Person</h2>
+        <span class="muted small">Enter name and click capture</span>
+      </div>
+
+      <div class="form">
+        <label>Name</label>
+        <input id="regName" type="text" placeholder="e.g. Ayush" />
+
+        <button class="btn big success" onclick="captureRegister()">
+          📸 Capture & Save
+          <span class="sub">Saves 10 images automatically</span>
+        </button>
+
+        <button class="btn big primary" onclick="trainModel()">
+          🧠 Train Model
+          <span class="sub">Train after adding a new person</span>
+        </button>
+      </div>
+
+      <div class="toast-wrap">
+        <div id="toast" class="toast hidden"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>✅ Tip: Stand straight + good light = better recognition</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
