@@ -6,7 +6,6 @@ import cv2
 import time
 import os
 
-# ✅ PDF converter
 from pdf_report import csv_to_pdf
 
 app = Flask(__name__)
